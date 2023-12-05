@@ -1,0 +1,90 @@
+---
+{{- if .ES_SERVER }}
+global:
+  gc: true
+  indexerConfig:
+    esServers: ["{{.ES_SERVER}}"]
+    insecureSkipVerify: true
+    defaultIndex: {{.ES_INDEX}}
+    type: elastic
+{{- end }}
+jobs:
+  {{- if .CONVERGENCE_TRACKER }}
+  - name: convergence-tracker
+    namespace: convergence-tracker
+    jobIterations: 1
+    podWait: false
+    waitWhenFinished: false
+    preLoadImages: false
+    churn: false
+    cleanup: true
+    {{- if .JOB_NAMESPACE_LABELS }}
+    namespaceLabels: {{.JOB_NAMESPACE_LABELS}}
+    {{- end}}
+    jobPause: 30s
+    objects:
+      - objectTemplate: {{.PLATFORM}}/convergence_tracker.yml
+        replicas: {{.NODES_COUNT}}
+        inputVars:
+          threshold: "{{.THRESHOLD}}"
+          es_server: "{{.ES_SERVER}}"
+          es_index: {{.ES_INDEX}}
+          metadata: "netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}, pods_per_namespace: {{.PODS_PER_NAMESPACE}},
+           local_pods: {{.LOCAL_PODS}}, gress_rules: {{.GRESS_RULES}}, 
+           single_ports: {{.SINGLE_PORTS}}, port_ranges: {{.PORT_RANGES}},
+           peer_namespaces: {{.PEER_NAMESPACES}}, peer_pods: {{.PEER_PODS}}, cidr_rules: {{.CIDRS}}"
+  {{- end }}
+  - name: network-policy-perf
+    namespace: network-policy-perf
+    jobIterations: {{.NAMESPACES}}
+    qps: 300
+    burst: 300
+    namespacedIterations: true
+    podWait: false
+    waitWhenFinished: true
+#    preLoadImages: true
+    preLoadImages: false
+#    preLoadPeriod: 30s
+#    jobIterationDelay: 1m
+    churn: false
+    jobPause: "{{.JOB_PAUSE}}"
+    {{- if .CONVERGENCE_TRACKER }}
+    beforeCleanup: "convergence_waiter.sh"
+    {{- end }}
+    cleanup: true
+    {{- if .JOB_NAMESPACE_LABELS }}
+    namespaceLabels: {{.JOB_NAMESPACE_LABELS}}
+    {{- end }}
+    objects:
+      - objectTemplate: pod.yml
+        replicas: {{.PODS_PER_NAMESPACE}}
+      {{- if eq .INGRESS "true" }}
+      - objectTemplate: ingress-np.yml
+        replicas: {{.NETPOLS_PER_NAMESPACE}}
+        inputVars:
+          namespaces: {{.NAMESPACES}}
+          pods_per_namespace: {{.PODS_PER_NAMESPACE}}
+          netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}
+          local_pods: {{.LOCAL_PODS}}
+          gress_rules: {{.GRESS_RULES}}
+          single_ports: {{.SINGLE_PORTS}}
+          port_ranges: {{.PORT_RANGES}}
+          peer_namespaces: {{.PEER_NAMESPACES}}
+          peer_pods: {{.PEER_PODS}}
+          cidr_rules: {{.CIDRS}}
+      {{- end }}
+      {{- if eq .EGRESS "true" }}
+      - objectTemplate: egress-np.yml
+        replicas: {{.NETPOLS_PER_NAMESPACE}}
+        inputVars:
+          namespaces: {{.NAMESPACES}}
+          pods_per_namespace: {{.PODS_PER_NAMESPACE}}
+          netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}
+          local_pods: {{.LOCAL_PODS}}
+          gress_rules: {{.GRESS_RULES}}
+          single_ports: {{.SINGLE_PORTS}}
+          port_ranges: {{.PORT_RANGES}}
+          peer_namespaces: {{.PEER_NAMESPACES}}
+          peer_pods: {{.PEER_PODS}}
+          cidr_rules: {{.CIDRS}}
+      {{- end }}
