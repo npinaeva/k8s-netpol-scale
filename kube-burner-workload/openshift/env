@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -a
+ES_SERVER=https://example.com:443
+ES_INDEX=ripsaw-kube-burner
+JOB_NAMESPACE_LABELS="
+      security.openshift.io/scc.podSecurityLabelSync: false
+      pod-security.kubernetes.io/enforce: privileged
+      pod-security.kubernetes.io/audit: privileged
+      pod-security.kubernetes.io/warn: privileged
+"
+set +a

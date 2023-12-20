@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -a
+# minimal example
+NAMESPACES=1
+PODS_PER_NAMESPACE=1
+NETPOLS_PER_NAMESPACE=1
+
+# netpol config
+INGRESS=true
+EGRESS=false
+LOCAL_PODS=1
+GRESS_RULES=0
+SINGLE_PORTS=0
+PORT_RANGES=0
+PEER_NAMESPACES=0
+PEER_PODS=0
+CIDRS=1
+
+# set kubeconfig
+KUBECONFIG=
+NODES_COUNT=3
+
+# PLATFORM is one of the folders under network-policy workload
+PLATFORM=openshift
+# CONVERGENCE_TRACKER
+CONVERGENCE_TRACKER=true
+# THRESHOLD is a convergence tracker parameter, specifying for how long the system should be stable to be considered converged
+THRESHOLD=60
+# JOB_PAUSE defines for how long he workload won't be deleted after the test is done
+# default behaviour is to wait for 5 minutes after job completion to see how the system
+# behaves some time after all work is done
+JOB_PAUSE=5m
+# to debug, use longer interval
+#JOB_PAUSE=1h
+
+# variables that should be filled by platform or stay empty
+JOB_NAMESPACE_LABELS=
+ES_SERVER=
+ES_INDEX=
+
+if [[ ! -z $PLATFORM ]]; then
+  if test -f $PLATFORM/env; then
+    source $PLATFORM/env
+  fi
+fi
+set +a

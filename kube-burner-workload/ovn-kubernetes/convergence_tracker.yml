@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: convergence-tracker-{{.Replica}}
+  labels:
+    app: convergence-tracker
+spec:
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app: convergence-tracker
+  volumes:
+    - name: openvswitch
+      hostPath:
+        path: /var/run/openvswitch
+    - name: host-var-log-ovs
+      hostPath:
+        path: /var/log/openvswitch
+  restartPolicy: Never
+  containers:
+    - name: tracker
+      # image built with the ./openflow-tracker/Dockerfile
+      image: quay.io/npinaeva/netpol-scale:ovn-kubernetes
+      command: [ "/bin/bash", "-c", "python openflow-tracker.py"]
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: openvswitch
+          mountPath: /var/run/openvswitch
+        - name: openvswitch
+          mountPath: /var/run/ovn
+        - name: host-var-log-ovs
+          mountPath: /var/log/openvswitch
+      env:
+        - name: THRESHOLD
+          value: "{{.threshold}}"
+        - name: ES_SERVER
+          value: {{.es_server}}
+        - name: ES_INDEX_NETPOL
+          value: {{.es_index}}
+        - name: UUID
+          value: {{.UUID}}
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
