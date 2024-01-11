@@ -1,0 +1,46 @@
+{{- $myDict := dict "test-pod" "true" "num" (toString .Replica) }}
+{{- $replicas := int .Replica }}
+{{- range $i, $e := until $replicas }}
+{{- $num := add $i 1 }}
+{{- $_ := set $myDict (toString $num) "true" }}
+{{- end }}
+{{- $labels := toJson $myDict }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod-{{.Replica}}
+  labels: {{$labels}}
+spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 10
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                test-pod: "true"
+            namespaceSelector: {}
+            topologyKey: kubernetes.io/hostname
+        - weight: 10
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                num: "{{.Replica}}"
+            namespaceSelector: {}
+            topologyKey: kubernetes.io/hostname
+#    nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#          - matchExpressions:
+#              - key: node-role.kubernetes.io/control-plane
+#                operator: DoesNotExist
+  containers:
+  - name: sleeper
+    args:
+    - sleep
+    - infinity
+    image: registry.k8s.io/pause:3.1
+    imagePullPolicy: IfNotPresent
+    ports:
+     - containerPort: 8080
+       protocol: TCP
