@@ -9,21 +9,23 @@ NETPOLS_PER_NAMESPACE=1
 INGRESS=true
 EGRESS=false
 LOCAL_PODS=1
-GRESS_RULES=0
 SINGLE_PORTS=0
 PORT_RANGES=0
+POD_SELECTORS=0
 PEER_NAMESPACES=0
 PEER_PODS=0
 CIDRS=1
 
 # set kubeconfig
 KUBECONFIG=
-NODES_COUNT=3
 
 # PLATFORM is one of the folders under network-policy workload
 PLATFORM=openshift
 # CONVERGENCE_TRACKER
 CONVERGENCE_TRACKER=true
+# Number of nodes to run convergence tracker. Doesn't have effect if CONVERGENCE_TRACKER is false
+NODES_COUNT=3
+
 # THRESHOLD is a convergence tracker parameter, specifying for how long the system should be stable to be considered converged
 THRESHOLD=60
 # JOB_PAUSE defines for how long he workload won't be deleted after the test is done

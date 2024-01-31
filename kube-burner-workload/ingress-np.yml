@@ -15,10 +15,10 @@ spec:
   podSelector:
     matchLabels: {{$localPodLabel}}
   ingress:
-  {{- $startIdx := mul $.Iteration .gress_rules .netpols_per_namespace }}
-  {{- $nsShift := mul (sub $.Replica 1) .gress_rules }}
+  {{- $startIdx := mul $.Iteration .pod_selectors .netpols_per_namespace }}
+  {{- $nsShift := mul (sub $.Replica 1) .pod_selectors }}
   {{- $startIdx = add $startIdx $nsShift -1 }}
-  {{- range $i, $e := until .gress_rules }}
+  {{- range $i, $e := until .pod_selectors }}
     {{- $startIdx = add $startIdx 1 }}
     {{- if ge $startIdx $binomial }}
       {{- $startIdx = mod $startIdx $binomial }}
