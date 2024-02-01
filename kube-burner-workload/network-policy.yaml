@@ -30,7 +30,7 @@ jobs:
           es_server: "{{.ES_SERVER}}"
           es_index: {{.ES_INDEX}}
           metadata: "netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}, pods_per_namespace: {{.PODS_PER_NAMESPACE}},
-           local_pods: {{.LOCAL_PODS}}, gress_rules: {{.GRESS_RULES}}, 
+           local_pods: {{.LOCAL_PODS}}, pod_selectors: {{.POD_SELECTORS}}, 
            single_ports: {{.SINGLE_PORTS}}, port_ranges: {{.PORT_RANGES}},
            peer_namespaces: {{.PEER_NAMESPACES}}, peer_pods: {{.PEER_PODS}}, cidr_rules: {{.CIDRS}}"
   {{- end }}
@@ -66,7 +66,7 @@ jobs:
           pods_per_namespace: {{.PODS_PER_NAMESPACE}}
           netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}
           local_pods: {{.LOCAL_PODS}}
-          gress_rules: {{.GRESS_RULES}}
+          pod_selectors: {{.POD_SELECTORS}}
           single_ports: {{.SINGLE_PORTS}}
           port_ranges: {{.PORT_RANGES}}
           peer_namespaces: {{.PEER_NAMESPACES}}
@@ -81,7 +81,7 @@ jobs:
           pods_per_namespace: {{.PODS_PER_NAMESPACE}}
           netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}
           local_pods: {{.LOCAL_PODS}}
-          gress_rules: {{.GRESS_RULES}}
+          pod_selectors: {{.POD_SELECTORS}}
           single_ports: {{.SINGLE_PORTS}}
           port_ranges: {{.PORT_RANGES}}
           peer_namespaces: {{.PEER_NAMESPACES}}

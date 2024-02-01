@@ -28,12 +28,12 @@ corresponding ingress and egress policies have exactly same peers for now (may b
 
 Networkpolicy template takes the following args:
 - local_pods: number of pods to select by `spec.podSelector`, same set of pods for every policy in the namespace
-- gress_rules: number of selector-based peers, every peer has only 1 selector and may have multiple ports
-- single_ports: number of single ports for every selector-based peer
-- port_ranges: number of port ranges for every selector-based peer
-- peer_namespaces: number of selected namespaces for every peer
-- peer_pods: number of selected pods for every peer
-- cidr_rules: number of CIDR-based rules
+- single_ports: number of single ports for every gress rule
+- port_ranges: number of port ranges for every gress rule
+- pod_selectors: number of selector-based gress rules, every rule has only 1 selector and may have multiple ports
+- peer_namespaces: number of selected namespaces for every pod_selector peer
+- peer_pods: number of selected pods for every pod_selector peer
+- cidr_rules: number of CIDR-based gress rules
 
 To increase the real load and reduce the number of possible internal optimizations, we need to generate different peers.
 CIDRs are all different inside one namespace, they start from `1.0.0.0/24`, and are incremented by 1, `1.0.1.0/24`, `1.0.2.0/24, etc.
@@ -314,9 +314,9 @@ PODS_PER_NAMESPACE=1
 NETPOLS_PER_NAMESPACE=1
 
 LOCAL_PODS=1
-GRESS_RULES=2
 SINGLE_PORTS=0
 PORT_RANGES=0
+POD_SELECTORS=2
 PEER_NAMESPACES=3
 PEER_PODS=1
 CIDRS=0
@@ -346,8 +346,7 @@ the workload.
 
 ## Running
 
-1. Install kube-burner (currently only source build from main branch will work, waiting for
-https://github.com/cloud-bulldozer/kube-burner/pull/502 to be released)
+1. Install kube-burner v1.9.0+
   
     1.1 You can download kube-burner from https://github.com/cloud-bulldozer/kube-burner/releases
     
