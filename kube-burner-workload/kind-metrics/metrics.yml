@@ -1,0 +1,26 @@
+# API server
+
+- query: irate(apiserver_request_total{verb="POST", resource="pods", subresource="binding",code="201"}[2m]) > 0
+  metricName: schedulingThroughput
+
+- query: histogram_quantile(0.99, sum(irate(apiserver_request_duration_seconds_bucket{apiserver="kube-apiserver", verb=~"LIST|GET", subresource!~"log|exec|portforward|attach|proxy"}[2m])) by (le, resource, verb, scope)) > 0
+  metricName: readOnlyAPICallsLatency
+
+- query: histogram_quantile(0.99, sum(irate(apiserver_request_duration_seconds_bucket{apiserver="kube-apiserver", verb=~"POST|PUT|DELETE|PATCH", subresource!~"log|exec|portforward|attach|proxy"}[2m])) by (le, resource, verb, scope)) > 0
+  metricName: mutatingAPICallsLatency
+
+- query: sum(irate(apiserver_request_total{apiserver="kube-apiserver",verb!="WATCH"}[2m])) by (verb,resource,code) > 0
+  metricName: APIRequestRate
+
+# Containers & pod metrics
+- query: (sum(irate(container_cpu_usage_seconds_total{name!="",container!="POD",namespace="kube-system"}[2m]) * 100) by (container, pod, namespace, node)) > 0
+  metricName: containerCPU
+
+- query: (sum(container_memory_rss{name!="",container!="POD",namespace="kube-system"}) by (container, pod, namespace, node)) > 0
+  metricName: containerMemory
+
+# Cluster metrics
+
+- query: kubernetes_build_info
+  metricName: k8sVersion
+  instant: true
