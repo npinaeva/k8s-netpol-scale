@@ -27,6 +27,7 @@ jobs:
         replicas: {{.NODES_COUNT}}
         inputVars:
           threshold: "{{.THRESHOLD}}"
+          convergence_timeout: "{{.CONVERGENCE_TIMEOUT}}"
           es_server: "{{.ES_SERVER}}"
           es_index: {{.ES_INDEX}}
           metadata: "netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}, pods_per_namespace: {{.PODS_PER_NAMESPACE}},
