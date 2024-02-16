@@ -20,9 +20,9 @@ CIDRS=1
 KUBECONFIG=
 
 # PLATFORM is one of the folders under network-policy workload
-PLATFORM=openshift
+PLATFORM=kind-metrics
 # CONVERGENCE_TRACKER
-CONVERGENCE_TRACKER=true
+CONVERGENCE_TRACKER=
 # Number of nodes to run convergence tracker. Doesn't have effect if CONVERGENCE_TRACKER is false
 NODES_COUNT=3
 
