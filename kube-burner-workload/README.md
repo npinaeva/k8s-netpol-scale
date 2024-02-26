@@ -333,6 +333,13 @@ and also may be reused and improved by the same platform as a part of this frame
 
 Every platform may have its own README.
 
+### Comparing different platforms
+
+To ensure results for different platform are comparable, set up the convergence tracker logic to be as similar as possible,
+all timeouts and variables defining successful test run should be the same.
+Cluster-specific parameters, like resource quotas, enables services (e.g. observability), nodes configurations may also
+affect the results.
+
 ## Tracking the end of the test
 
 `CONVERGENCE_TRACKER` env variable enables `convergence-tracker` job.
