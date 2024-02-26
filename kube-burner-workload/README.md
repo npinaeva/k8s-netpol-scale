@@ -354,7 +354,7 @@ before deleting the workload.
 
 ## Running
 
-1. Install kube-burner v1.9.0+
+1. Install kube-burner v1.9.4+
   
     1.1 You can download kube-burner from https://github.com/cloud-bulldozer/kube-burner/releases
     
