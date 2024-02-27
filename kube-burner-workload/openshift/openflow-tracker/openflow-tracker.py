@@ -141,7 +141,7 @@ def main():
     es_index = os.getenv("ES_INDEX_NETPOL")
     node_name = os.getenv("MY_NODE_NAME")
     uuid = os.getenv("UUID")
-    threshold = int(os.getenv("THRESHOLD"))
+    convergence_period = int(os.getenv("CONVERGENCE_PERIOD"))
     convergence_timeout = int(os.getenv("CONVERGENCE_TIMEOUT"))
     start_time = datetime.datetime.now()
 
@@ -156,17 +156,17 @@ def main():
         "workload": "network-policy-perf",
         "uuid": uuid,
         "source_name": node_name,
-        "threshold": threshold,
+        "convergence_period": convergence_period,
         "convergence_timeout": convergence_timeout,
         "test_metadata": os.getenv("METADATA"),
     }
     index_result(doc)
 
     logging.info(
-        f"Start openflow-tracker {node_name}, threshold {threshold}, convergence timeout {convergence_timeout}"
+        f"Start openflow-tracker {node_name}, convergence_period {convergence_period}, convergence timeout {convergence_timeout}"
     )
     stabilize_time, flow_num = wait_for_flows_to_stabilize(
-        1, threshold, convergence_timeout, node_name
+        1, convergence_period, convergence_timeout, node_name
     )
     stabilize_datetime = datetime.datetime.fromtimestamp(stabilize_time)
     nbdb_data = get_db_data()

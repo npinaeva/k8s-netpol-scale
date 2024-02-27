@@ -84,7 +84,7 @@ def check_ovn_health():
 
 def main():
     node_name = os.getenv("MY_NODE_NAME")
-    threshold = int(os.getenv("THRESHOLD"))
+    convergence_period = int(os.getenv("CONVERGENCE_PERIOD"))
     convergence_timeout = int(os.getenv("CONVERGENCE_TIMEOUT"))
 
     logging.basicConfig(
@@ -94,10 +94,10 @@ def main():
     )
 
     logging.info(
-        f"Start openflow-tracker {node_name}, threshold {threshold}, convergence timeout {convergence_timeout}"
+        f"Start openflow-tracker {node_name}, convergence_period {convergence_period}, convergence timeout {convergence_timeout}"
     )
     stabilize_time, flow_num = wait_for_flows_to_stabilize(
-        1, convergence_timeout, 3600, node_name
+        1, convergence_period, convergence_timeout, node_name
     )
     stabilize_datetime = datetime.datetime.fromtimestamp(stabilize_time)
     nbdb_data = get_db_data()

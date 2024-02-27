@@ -23,12 +23,16 @@ KUBECONFIG=
 PLATFORM=openshift
 # Convergence tracker settings
 CONVERGENCE_TRACKER=true
+# CONVERGENCE_PERIOD and CONVERGENCE_TIMEOUT are convergence tracker parameters.
+# CONVERGENCE_PERIOD specifies for how long the system should be stable to be considered converged and
+# CONVERGENCE_TIMEOUT is a timer specifying the hard deadline for policy convergence. An expired timer
+# indicates a test failure. CONVERGENCE_TIMEOUT should be a larger than CONVERGENCE_PERIOD.
+CONVERGENCE_PERIOD=60
 CONVERGENCE_TIMEOUT=3600
+
 # Number of nodes to run convergence tracker. Doesn't have effect if CONVERGENCE_TRACKER is false
 NODES_COUNT=3
 
-# THRESHOLD is a convergence tracker parameter, specifying for how long the system should be stable to be considered converged
-THRESHOLD=60
 # JOB_PAUSE defines for how long he workload won't be deleted after the test is done
 # default behaviour is to wait for 5 minutes after job completion to see how the system
 # behaves some time after all work is done

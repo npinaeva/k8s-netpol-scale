@@ -26,7 +26,7 @@ jobs:
       - objectTemplate: {{.PLATFORM}}/convergence_tracker.yml
         replicas: {{.NODES_COUNT}}
         inputVars:
-          threshold: "{{.THRESHOLD}}"
+          convergence_period: "{{.CONVERGENCE_PERIOD}}"
           convergence_timeout: "{{.CONVERGENCE_TIMEOUT}}"
           es_server: "{{.ES_SERVER}}"
           es_index: {{.ES_INDEX}}
