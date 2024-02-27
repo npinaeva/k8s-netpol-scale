@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TIME_SPENT=0
-while [ $TIME_SPENT -le $CONVERGENCE_TIMEOUT ]; do
+while [ $TIME_SPENT -le "$CONVERGENCE_TIMEOUT" ]; do
   # failure will return 1 because of the "echo FAILED| wc -l"
   PODS_COUNT=$( (kubectl get pods -n convergence-tracker-0 --no-headers || echo FAILED) | grep -c -v Completed)
   if [ "$PODS_COUNT" -eq 0 ]; then
