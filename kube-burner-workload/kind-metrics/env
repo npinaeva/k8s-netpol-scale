@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -a
+ES_SERVER=http://admin:admin@localhost:9200
+ES_INDEX=kube-burner
+set +a

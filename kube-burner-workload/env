@@ -20,9 +20,9 @@ CIDRS=1
 KUBECONFIG=
 
 # PLATFORM is one of the folders under network-policy workload
-PLATFORM=openshift
+PLATFORM=kind-metrics
 # Convergence tracker settings
-CONVERGENCE_TRACKER=true
+CONVERGENCE_TRACKER=
 # CONVERGENCE_PERIOD and CONVERGENCE_TIMEOUT are convergence tracker parameters.
 # CONVERGENCE_PERIOD specifies for how long the system should be stable to be considered converged and
 # CONVERGENCE_TIMEOUT is a timer specifying the hard deadline for policy convergence. An expired timer
