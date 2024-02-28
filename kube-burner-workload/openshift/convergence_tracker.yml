@@ -12,10 +12,16 @@ spec:
       labelSelector:
         matchLabels:
           app: convergence-tracker
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
   volumes:
     - name: openvswitch
       hostPath:
         path: /var/run/openvswitch
+    - name: ovn
+      hostPath:
+        path: /var/run/ovn/
     - name: ovn-ic
       hostPath:
         path: /var/run/ovn-ic/
@@ -42,8 +48,10 @@ spec:
           mountPath: /var/run/openvswitch
         - name: host-var-log-ovs
           mountPath: /var/log/openvswitch
-        - name: ovn-ic
+        - name: ovn
           mountPath: /var/run/ovn
+        - name: ovn-ic
+          mountPath: /var/run/ovn-ic
         - name: pod-logs
           mountPath: /var/log/pods
       env:
