@@ -268,9 +268,9 @@ namespace-1/netpol-5
 Initial 15423 peers were split into 174057 profiles.
 Used profiles statistics (number of copies)
 
- 1th profile:  326.0
- 2th profile: ▇▇ 1943.0
- 3th profile:  1.0
+ 1st profile:  326.0
+ 2nd profile: ▇▇ 1943.0
+ 3rd profile:  1.0
  4th profile:  840.0
  5th profile: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 94519.0
  6th profile: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 30789.0
@@ -282,118 +282,201 @@ Used profiles statistics (number of copies)
 15th profile:  5.0
 16th profile: ▇ 971.0
 
-Profile 5 stats: 
-1th heaviest weight: 0.00385000 used by 1 peer(s)
+5th profile (5436 peers) stats: 
+1st heaviest weight: 0.00385000 used by 1 peer(s)
 	localpods=154
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:2}]
-2th heaviest weight: 0.00192500 used by 1 peer(s)
+2nd heaviest weight: 0.00192500 used by 6 peer(s)
 	localpods=154
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:3}]
-3th heaviest weight: 0.00158750 used by 1 peer(s)
+	localpods=154
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:3}]
+	localpods=154
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:2}]
+	localpods=154
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:2}]
+	localpods=154
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:2}]
+3rd heaviest weight: 0.00158750 used by 418 peer(s)
 	localpods=127
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:3}]
+	localpods=127
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:2}]
+	localpods=127
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:2}]
+	localpods=127
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:2}]
+	localpods=127
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:2}]
 4th heaviest weight: 0.00072500 used by 1 peer(s)
 	localpods=58
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:3}]
 5th heaviest weight: 0.00062500 used by 1 peer(s)
 	localpods=25
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:2}]
-Profile 6 stats: 
-1th heaviest weight: 0.00200000 used by 1 peer(s)
+6th profile (2118 peers) stats: 
+1st heaviest weight: 0.00200000 used by 1 peer(s)
 	localpods=80
 	ports=[single: 2, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:1}]
-2th heaviest weight: 0.00065000 used by 1 peer(s)
+2nd heaviest weight: 0.00065000 used by 8 peer(s)
 	localpods=26
 	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:6}]
-3th heaviest weight: 0.00062500 used by 1 peer(s)
+	localpods=26
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+	localpods=26
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:5}]
+	localpods=26
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+	localpods=26
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:6}]
+3rd heaviest weight: 0.00062500 used by 174 peer(s)
 	localpods=25
 	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:6}]
-4th heaviest weight: 0.00060000 used by 1 peer(s)
+	localpods=25
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+	localpods=25
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:5}]
+	localpods=25
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+	localpods=25
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:6}]
+4th heaviest weight: 0.00060000 used by 12 peer(s)
 	localpods=24
 	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:6}]
-5th heaviest weight: 0.00057500 used by 1 peer(s)
+	localpods=24
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+	localpods=24
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:5}]
+	localpods=24
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+	localpods=24
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:6}]
+5th heaviest weight: 0.00057500 used by 4 peer(s)
 	localpods=23
 	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:6}]
-Profile 10 stats: 
-1th heaviest weight: 0.00546000 used by 1 peer(s)
+	localpods=23
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+	localpods=23
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:5}]
+	localpods=23
+	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:4}]
+10th profile (4086 peers) stats: 
+1st heaviest weight: 0.00546000 used by 1 peer(s)
 	localpods=127
 	ports=[single: 1, ranges: 0], peers=[{cidrs:21 podSelectors:0 peerPods:0}]
-2th heaviest weight: 0.00384000 used by 1 peer(s)
+2nd heaviest weight: 0.00384000 used by 1 peer(s)
 	localpods=154
 	ports=[single: 4, ranges: 0], peers=[{cidrs:3 podSelectors:0 peerPods:0}]
-3th heaviest weight: 0.00364000 used by 1 peer(s)
+3rd heaviest weight: 0.00364000 used by 2 peer(s)
+	localpods=127
+	ports=[single: 1, ranges: 0], peers=[{cidrs:14 podSelectors:0 peerPods:0}]
 	localpods=127
 	ports=[single: 1, ranges: 0], peers=[{cidrs:14 podSelectors:0 peerPods:0}]
 4th heaviest weight: 0.00192000 used by 1 peer(s)
 	localpods=154
 	ports=[single: 2, ranges: 0], peers=[{cidrs:3 podSelectors:0 peerPods:0}]
-5th heaviest weight: 0.00130000 used by 1 peer(s)
+5th heaviest weight: 0.00130000 used by 5 peer(s)
 	localpods=127
 	ports=[single: 5, ranges: 0], peers=[{cidrs:1 podSelectors:0 peerPods:0}]
-Profile 7 stats: 
-1th heaviest weight: 0.02880000 used by 1 peer(s)
+	localpods=127
+	ports=[single: 5, ranges: 0], peers=[{cidrs:1 podSelectors:0 peerPods:0}]
+	localpods=127
+	ports=[single: 5, ranges: 0], peers=[{cidrs:1 podSelectors:0 peerPods:0}]
+	localpods=127
+	ports=[single: 1, ranges: 0], peers=[{cidrs:5 podSelectors:0 peerPods:0}]
+	localpods=127
+	ports=[single: 5, ranges: 0], peers=[{cidrs:1 podSelectors:0 peerPods:0}]
+7th profile (469 peers) stats: 
+1st heaviest weight: 0.02880000 used by 2 peer(s)
 	localpods=12
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-2th heaviest weight: 0.01440000 used by 1 peer(s)
+	localpods=12
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+2nd heaviest weight: 0.01440000 used by 1 peer(s)
 	localpods=6
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-3th heaviest weight: 0.01200000 used by 1 peer(s)
+3rd heaviest weight: 0.01200000 used by 1 peer(s)
 	localpods=5
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-4th heaviest weight: 0.00960000 used by 1 peer(s)
+4th heaviest weight: 0.00960000 used by 3 peer(s)
 	localpods=4
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-5th heaviest weight: 0.00720000 used by 1 peer(s)
+	localpods=4
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=4
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+5th heaviest weight: 0.00720000 used by 9 peer(s)
 	localpods=3
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-Profile 8 stats: 
-1th heaviest weight: 0.04233333 used by 1 peer(s)
+	localpods=3
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=3
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=3
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=3
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+8th profile (719 peers) stats: 
+1st heaviest weight: 0.04233333 used by 1 peer(s)
 	localpods=127
 	ports=[single: 5, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:127}]
-2th heaviest weight: 0.02540000 used by 1 peer(s)
+2nd heaviest weight: 0.02540000 used by 1 peer(s)
 	localpods=127
 	ports=[single: 3, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:127}]
-3th heaviest weight: 0.01693333 used by 1 peer(s)
+3rd heaviest weight: 0.01693333 used by 2 peer(s)
 	localpods=127
 	ports=[single: 2, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:127}]
-4th heaviest weight: 0.01270000 used by 1 peer(s)
+	localpods=127
+	ports=[single: 2, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:127}]
+4th heaviest weight: 0.01270000 used by 2 peer(s)
 	localpods=127
 	ports=[single: 3, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:13}]
-5th heaviest weight: 0.00846667 used by 1 peer(s)
+	localpods=127
+	ports=[single: 3, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:13}]
+5th heaviest weight: 0.00846667 used by 5 peer(s)
 	localpods=127
 	ports=[single: 1, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:127}]
-Profile 11 stats: 
-1th heaviest weight: 0.18720000 used by 1 peer(s)
+	localpods=127
+	ports=[single: 2, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:13}]
+	localpods=127
+	ports=[single: 2, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:13}]
+	localpods=127
+	ports=[single: 2, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:13}]
+	localpods=127
+	ports=[single: 2, ranges: 0], peers=[{cidrs:0 podSelectors:1 peerPods:94}]
+11th profile (464 peers) stats: 
+1st heaviest weight: 0.18720000 used by 1 peer(s)
 	localpods=127
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-2th heaviest weight: 0.05760000 used by 1 peer(s)
+2nd heaviest weight: 0.05760000 used by 1 peer(s)
 	localpods=33
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-3th heaviest weight: 0.04320000 used by 1 peer(s)
+3rd heaviest weight: 0.04320000 used by 1 peer(s)
 	localpods=27
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-4th heaviest weight: 0.02880000 used by 1 peer(s)
+4th heaviest weight: 0.02880000 used by 7 peer(s)
 	localpods=14
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-5th heaviest weight: 0.01440000 used by 1 peer(s)
+	localpods=14
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=13
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=17
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=17
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+5th heaviest weight: 0.01440000 used by 8 peer(s)
 	localpods=7
 	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
-Profile 2 stats: 
-1th heaviest weight: 0.00020000 used by 1 peer(s)
-	localpods=2
-	ports=[single: 5, ranges: 0], peers=[{cidrs:2 podSelectors:0 peerPods:0}]
-2th heaviest weight: 0.00010000 used by 1 peer(s)
-	localpods=2
-	ports=[single: 5, ranges: 0], peers=[{cidrs:1 podSelectors:0 peerPods:0}]
-3th heaviest weight: 0.00008000 used by 1 peer(s)
-	localpods=2
-	ports=[single: 1, ranges: 0], peers=[{cidrs:4 podSelectors:0 peerPods:0}]
-4th heaviest weight: 0.00006000 used by 1 peer(s)
-	localpods=2
-	ports=[single: 1, ranges: 0], peers=[{cidrs:3 podSelectors:0 peerPods:0}]
-5th heaviest weight: 0.00004000 used by 1 peer(s)
-	localpods=2
-	ports=[single: 1, ranges: 0], peers=[{cidrs:2 podSelectors:0 peerPods:0}]
+	localpods=7
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=9
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=9
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+	localpods=10
+	ports=[single: 0, ranges: 0], peers=[{cidrs:0 podSelectors:2 peerPods:3578}]
+
 ```
 
 You can adjust the number of heaviest network policies to print with `-print-heavy-np` flag (default 5).

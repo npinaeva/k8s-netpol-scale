@@ -28,6 +28,21 @@ func (s *portStats) Increment(key int, cidrs, podSelectors bool) {
 	}
 }
 
+type netpolWeight struct {
+	npConfig   *netpolConfig
+	result     profilesMatch
+	weight     float64
+	netpolName string
+}
+
+func (w *netpolWeight) print() {
+	fmt.Printf("%v\n", w.netpolName)
+	indent := "  "
+	w.npConfig.print(indent)
+	w.result.print(indent)
+	fmt.Printf("%sweight: %v\n", indent, w.weight)
+}
+
 type stats struct {
 	singlePorts    portStats
 	portRanges     portStats
@@ -70,13 +85,13 @@ func newStats() *stats {
 	}
 }
 
-func toTgraphData(input map[int]int, label string) ([][]float64, []string) {
+func toTgraphData(input map[int]int, getLabel func(key int) string) ([][]float64, []string) {
 	data := [][]float64{}
 	labels := []string{}
 	sortedKeys, sortedValues := sortedMap[int, int](input, false)
 	for i, key := range sortedKeys {
 		data = append(data, []float64{float64(sortedValues[i])})
-		labels = append(labels, fmt.Sprintf("%d%s", key, label))
+		labels = append(labels, getLabel(key))
 	}
 	return data, labels
 }
@@ -100,15 +115,12 @@ func median(data map[int]int, ignoreZeros bool) int {
 
 	sort.Ints(inlinedData)
 
-	var median int
 	l := len(inlinedData)
 	if l == 0 {
 		return 0
 	} else {
-		median = inlinedData[l/2]
+		return inlinedData[l/2]
 	}
-
-	return median
 }
 
 func average(data map[int]int) float64 {
@@ -145,16 +157,16 @@ func (stat *stats) print(printEmptyNetpols, printGraphs bool, heaviestNetpols in
 		)
 
 		for _, gData := range []graphData{
-			{stat.localPods, " pod(s)", "Local pods distribution"},
-			{stat.cidrs, " CIDR(s)", "CIDR peers distribution"},
-			{stat.podSelectors, " pod selector(s)", "Pod selector peers distribution"},
-			{stat.peerPods, " peer pod(s)", "Peer pods distribution"},
-			{stat.singlePorts.cidrs, " single port(s)", "Single port peers distribution (CIDRs)"},
-			{stat.singlePorts.podSelectors, " single port(s)", "Single port peers distribution (pod selectors)"},
-			{stat.portRanges.cidrs, " port ranges(s)", "Port range peers distribution (CIDRs)"},
-			{stat.portRanges.podSelectors, " port ranges(s)", "Port range peers distribution (pod selectors)"},
+			{stat.localPods, "pod(s)", "Local pods distribution"},
+			{stat.cidrs, "CIDR(s)", "CIDR peers distribution"},
+			{stat.podSelectors, "pod selector(s)", "Pod selector peers distribution"},
+			{stat.peerPods, "peer pod(s)", "Peer pods distribution"},
+			{stat.singlePorts.cidrs, "single port(s)", "Single port peers distribution (CIDRs)"},
+			{stat.singlePorts.podSelectors, "single port(s)", "Single port peers distribution (pod selectors)"},
+			{stat.portRanges.cidrs, "port ranges(s)", "Port range peers distribution (CIDRs)"},
+			{stat.portRanges.podSelectors, "port ranges(s)", "Port range peers distribution (pod selectors)"},
 		} {
-			data, labels := toTgraphData(gData.input, gData.label)
+			data, labels := toTgraphData(gData.input, func(key int) string { return fmt.Sprintf("%d %s", key, gData.label) })
 			tgraph.Chart(gData.title, labels, data, nil,
 				nil, 100, false, "▇")
 			total := 0
@@ -201,19 +213,25 @@ func (stat *stats) print(printEmptyNetpols, printGraphs bool, heaviestNetpols in
 			}
 		}
 		fmt.Printf("Initial %v peers were split into %v profiles.\n", stat.peersCounter, totalProfiles)
-		data, labels := toTgraphData(profileCopies, "th profile")
+		data, labels := toTgraphData(profileCopies, func(key int) string { return fmt.Sprintf("%s profile", ordinalString(key)) })
 		tgraph.Chart("Used profiles statistics (number of copies)", labels, data, nil,
 			nil, 100, false, "▇")
 		fmt.Println()
 
 		// [pair(key=profile idx, value=number of copies)]
 		sortedCopies := sortedMapByValue[int, int](profileCopies, true)
-
+		totalPeers := 0
 		for _, profileCopy := range sortedCopies {
-
-			fmt.Printf("Profile %v stats: \n", profileCopy.key)
 			profilesToNetpolsIdx := profileCopy.key - 1
 			weightToPeers := stat.profilesToNetpols[profilesToNetpolsIdx]
+
+			profilePeers := 0
+			for _, copies := range weightToPeers {
+				profilePeers += len(copies)
+			}
+			totalPeers += profilePeers
+			fmt.Printf("%s profile (%v peers) stats: \n", ordinalString(profileCopy.key), profilePeers)
+
 			sortedWeights, _ := sortedMap[float64, []*gressWithLocalPods](weightToPeers, true)
 
 			weightsToPrint := 5
@@ -223,13 +241,13 @@ func (stat *stats) print(printEmptyNetpols, printGraphs bool, heaviestNetpols in
 
 			for i, weight := range sortedWeights[:weightsToPrint] {
 				weightUsages := stat.profilesToNetpols[profilesToNetpolsIdx][weight]
-				fmt.Printf("%vth heaviest weight: %.8f used by %v peer(s)\n", i+1, weight, len(weightUsages))
-				for _, rule := range weightUsages {
+				fmt.Printf("%s heaviest weight: %.8f used by %v peer(s)\n", ordinalString(i+1), weight, len(weightUsages))
+				for _, rule := range weightUsages[:min(5, len(weightUsages))] {
 					fmt.Printf("\tlocalpods=%v\n", rule.localPods)
 					rule.print("")
 				}
 			}
-
 		}
+		//fmt.Printf("Total peers: %v", totalPeers)
 	}
 }

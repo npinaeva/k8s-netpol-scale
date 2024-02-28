@@ -3,77 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math"
 
 	v1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
 )
 
-const floatDelta = 0.00000001
-
-func getGressRuleConfig(netpolNs string, policyPorts []networkingv1.NetworkPolicyPort, peers []networkingv1.NetworkPolicyPeer,
-	countSelected podsCounter) (*portConfig, *peerConfig) {
-	CIDRs := 0
-	podSelectors := 0
-	maxSelectedPods := 0
-
-	ports := 0
-	portRanges := 0
-	for _, port := range policyPorts {
-		if port.EndPort != nil {
-			portRanges += 1
-		} else {
-			ports += 1
-		}
-	}
-	for _, peer := range peers {
-		if peer.IPBlock != nil {
-			CIDRs += 1
-		} else {
-			podSelectors += 1
-			selectedPods := countSelected(peer.PodSelector, netpolNs, peer.NamespaceSelector)
-			maxSelectedPods = maxInt(maxSelectedPods, selectedPods)
-		}
-	}
-	if CIDRs == 0 && (podSelectors == 0 || maxSelectedPods == 0) {
-		return nil, nil
-	}
-	return &portConfig{ports, portRanges},
-		&peerConfig{CIDRs,
-			podSelectors,
-			maxSelectedPods,
-		}
-}
-
-func getNetpolConfig(netpol *networkingv1.NetworkPolicy, countSelected podsCounter) *netpolConfig {
-	localPods := countSelected(&netpol.Spec.PodSelector, netpol.Namespace, nil)
-	portPeers := map[*portConfig]*peerConfig{}
-
-	for _, egress := range netpol.Spec.Egress {
-		portConf, peerConf := getGressRuleConfig(netpol.Namespace, egress.Ports, egress.To, countSelected)
-		if portConf != nil {
-			portPeers[portConf] = peerConf.join(portPeers[portConf])
-		}
-	}
-	for _, ingress := range netpol.Spec.Ingress {
-		portConf, peerConf := getGressRuleConfig(netpol.Namespace, ingress.Ports, ingress.From, countSelected)
-		if portConf != nil {
-			portPeers[portConf] = peerConf.join(portPeers[portConf])
-		}
-	}
-	peers := []*gressRule{}
-	for portConf, peerConf := range portPeers {
-		peers = append(peers, &gressRule{
-			*portConf, *peerConf,
-		})
-	}
-
-	return &netpolConfig{
-		localPods:  localPods,
-		gressRules: peers,
-	}
-}
-
+// findClosestProfile returns profilesMatch with minimal weight for a given netpolConfig and a set of profiles.
+// It also updates stats for a given netpolConfig.
 func findClosestProfile(npConfig *netpolConfig, existingProfiles []*perfProfile, stat *stats) (matchedProfiles profilesMatch, emptyPol bool) {
 	if npConfig.localPods == 0 || len(npConfig.gressRules) == 0 {
 		// that policy doesn't do anything
@@ -100,29 +36,36 @@ func findClosestProfile(npConfig *netpolConfig, existingProfiles []*perfProfile,
 		}
 
 		if len(existingProfiles) > 0 {
+			// network policy may be split into CIDR-only and pod-selector-only profiles or
+			// be fully Matched by one profile
 			fullProfile := &profileMatch{}
 			cidrProfile := &profileMatch{}
-			selProfile := &profileMatch{}
+			podSelProfile := &profileMatch{}
 			for idx, profile := range existingProfiles {
-				copiesFull, copiesCIDR, copiesSel := matchProfile(profile, peer)
-				if peer.cidrs == 0 && copiesSel != 0 {
-					copiesFull = copiesSel
+				// find the number of copies needed to match given peer
+				copiesFull, copiesCIDR, copiesPodSel := matchProfile(profile, peer)
+				if peer.cidrs == 0 && copiesPodSel != 0 {
+					// if peer doesn't have cidrs, then podSelector match is full match
+					copiesFull = copiesPodSel
 				}
 				if peer.podSelectors == 0 && copiesCIDR != 0 {
+					// if peer doesn't have podSelectors, then CIDR match is full match
 					copiesFull = copiesCIDR
 				}
 				if debug {
-					fmt.Printf("DEBUG: matchProfile for %+v localpods %v %+v is %v %v %v\n", profile, npConfig.localPods, peer, copiesFull, copiesCIDR, copiesSel)
+					fmt.Printf("DEBUG: matchProfile for %+v localpods %v %+v is %v %v %v\n", profile, npConfig.localPods, peer, copiesFull, copiesCIDR, copiesPodSel)
 				}
-
-				updateProfile(fullProfile, npConfig.localPods, copiesFull, idx, profile)
-				updateProfile(cidrProfile, npConfig.localPods, copiesCIDR, idx, profile)
-				updateProfile(selProfile, npConfig.localPods, copiesSel, idx, profile)
+				// check if current profile match has less weight and update running minimum
+				updateMinimalMatch(fullProfile, npConfig.localPods, copiesFull, idx, profile)
+				updateMinimalMatch(cidrProfile, npConfig.localPods, copiesCIDR, idx, profile)
+				updateMinimalMatch(podSelProfile, npConfig.localPods, copiesPodSel, idx, profile)
 			}
 
-			combinedWeight := cidrProfile.weight + selProfile.weight
+			// if network policy was split into CIDR-only and pod-selector-only profiles, the final weight
+			// needs to be summarized
+			combinedWeight := cidrProfile.weight + podSelProfile.weight
 			// compare and accumulate, check for no match
-			if (cidrProfile.copies == 0 || selProfile.copies == 0) && fullProfile.copies == 0 {
+			if (cidrProfile.copies == 0 || podSelProfile.copies == 0) && fullProfile.copies == 0 {
 				// no match was found
 				matchedProfiles = nil
 				return
@@ -133,7 +76,7 @@ func findClosestProfile(npConfig *netpolConfig, existingProfiles []*perfProfile,
 				result = append(result, fullProfile)
 			} else {
 				// use cidr + selector
-				result = append(result, cidrProfile, selProfile)
+				result = append(result, cidrProfile, podSelProfile)
 			}
 			matchedProfiles = append(matchedProfiles, result...)
 
@@ -141,7 +84,8 @@ func findClosestProfile(npConfig *netpolConfig, existingProfiles []*perfProfile,
 				if _, ok := stat.profilesToNetpols[profile.idx]; !ok {
 					stat.profilesToNetpols[profile.idx] = map[float64][]*gressWithLocalPods{}
 				}
-				appendToSameWeight(stat.profilesToNetpols[profile.idx], &gressWithLocalPods{peer, npConfig.localPods}, profile.weight)
+				stat.profilesToNetpols[profile.idx][profile.weight] = append(stat.profilesToNetpols[profile.idx][profile.weight],
+					&gressWithLocalPods{peer, npConfig.localPods})
 			}
 		}
 	}
@@ -149,21 +93,11 @@ func findClosestProfile(npConfig *netpolConfig, existingProfiles []*perfProfile,
 		fmt.Printf("matched %v profiles:\n", len(matchedProfiles))
 		matchedProfiles.print("")
 	}
-
 	return
 }
 
-func appendToSameWeight(weightMap map[float64][]*gressWithLocalPods, peer *gressWithLocalPods, weight float64) {
-	for mapWeight := range weightMap {
-		if math.Abs(weight-mapWeight) < floatDelta {
-			weightMap[mapWeight] = append(weightMap[mapWeight], peer)
-			return
-		}
-	}
-	weightMap[weight] = []*gressWithLocalPods{peer}
-}
-
-func updateProfile(currentMin *profileMatch, localPods int, newCopies, newIdx int, newProfile *perfProfile) {
+// updateMinimalMatch compares current match with minimal weight and updates it is newProfile's weight is less.
+func updateMinimalMatch(currentMin *profileMatch, localPods int, newCopies, newIdx int, newProfile *perfProfile) {
 	localPodsMultiplier := topDiv(localPods, newProfile.localPods)
 	newCopies = newCopies * localPodsMultiplier
 	newWeight := float64(newCopies) * newProfile.weight
@@ -176,6 +110,8 @@ func updateProfile(currentMin *profileMatch, localPods int, newCopies, newIdx in
 
 func matchProfile(profile *perfProfile, peer *gressRule) (copiesFull, copiesCIDR, copiesSel int) {
 	// check if ports config is correct
+	// TODO may be improved to split profiles for single ports and port ranges in a similar way as
+	// cidrs and pod selectors are split
 	if peer.singlePorts != 0 && profile.singlePorts == 0 || peer.portRanges != 0 && profile.portRanges == 0 ||
 		(peer.singlePorts == 0 && peer.portRanges == 0 && (profile.singlePorts != 0 || profile.portRanges != 0)) {
 		//fmt.Printf("ports config doesn't match\n")
@@ -199,9 +135,20 @@ func matchProfile(profile *perfProfile, peer *gressRule) (copiesFull, copiesCIDR
 	return
 }
 
-func findProfiles(netpolList []*networkingv1.NetworkPolicy, existingProfiles []*perfProfile, countSelected podsCounter) *stats {
+func analyze(netpolList []*networkingv1.NetworkPolicy, existingProfiles []*perfProfile, countSelected podsCounter) *stats {
 	stat := newStats()
-	for _, netpol := range netpolList {
+	// log every 10% progress
+	logMul := len(netpolList) / 10
+	nextLog := logMul
+	if len(netpolList) < 500 {
+		// don't log if there are not many netpols
+		nextLog = -1
+	}
+	for i, netpol := range netpolList {
+		if i == nextLog {
+			fmt.Printf("INFO: %v Network Policies handled\n", i)
+			nextLog += logMul
+		}
 		npConfig := getNetpolConfig(netpol, countSelected)
 		matchedProfiles, emtyPol := findClosestProfile(npConfig, existingProfiles, stat)
 		if emtyPol {
@@ -253,13 +200,11 @@ func main() {
 	}
 	fmt.Printf("Found: %v Pods, %v Namespaces, %v NetworkPolicies\n", len(pods), len(namespaces), len(netpols))
 
-	selectedCounter := countSelected(pods, namespaces)
-
 	existingProfiles := []*perfProfile{}
 	if *profilesPath != "" {
 		existingProfiles = parseProfiles(*profilesPath)
 	}
 
-	stat := findProfiles(netpols, existingProfiles, selectedCounter)
-	stat.print(*printEmptyNetpols, *printGraphs, *printHeavyNetpols, len(existingProfiles) == 0)
+	statistics := analyze(netpols, existingProfiles, getPodsCounter(pods, namespaces))
+	statistics.print(*printEmptyNetpols, *printGraphs, *printHeavyNetpols, len(existingProfiles) == 0)
 }
