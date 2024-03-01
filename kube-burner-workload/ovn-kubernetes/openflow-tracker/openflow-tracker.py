@@ -18,14 +18,15 @@ def get_number_of_flows():
 
 
 # poll_interval in seconds, float
-# stable_threshold in seconds, for how long number of flows shouldn't change to consider it stable
+# convergence_period in seconds, for how long number of flows shouldn't change to consider it stable
 # timout in seconds
-def wait_for_flows_to_stabilize(poll_interval, stable_threshold, timeout, node_name):
+def wait_for_flows_to_stabilize(poll_interval, convergence_period, timeout, node_name):
     start = time.time()
     last_changed = time.time()
     flows_num = get_number_of_flows()
     while (
-        time.time() - last_changed < stable_threshold and time.time() - start < timeout
+        time.time() - last_changed < convergence_period
+        and time.time() - start < timeout
     ):
         new_flows_num = get_number_of_flows()
         if new_flows_num != flows_num:

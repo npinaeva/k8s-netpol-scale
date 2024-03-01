@@ -47,8 +47,8 @@ spec:
         - name: pod-logs
           mountPath: /var/log/pods
       env:
-        - name: THRESHOLD
-          value: "{{.threshold}}"
+        - name: CONVERGENCE_PERIOD
+          value: "{{.convergence_period}}"
         - name: ES_SERVER
           value: {{.es_server}}
         - name: ES_INDEX_NETPOL
