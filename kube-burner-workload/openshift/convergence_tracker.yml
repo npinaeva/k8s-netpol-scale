@@ -49,6 +49,8 @@ spec:
       env:
         - name: CONVERGENCE_PERIOD
           value: "{{.convergence_period}}"
+        - name: CONVERGENCE_TIMEOUT
+          value: "{{.convergence_timeout}}"
         - name: ES_SERVER
           value: {{.es_server}}
         - name: ES_INDEX_NETPOL

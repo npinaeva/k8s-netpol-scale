@@ -50,8 +50,12 @@ def get_number_of_logical_flows():
 
 # poll_interval in seconds, float
 # convergence_period in seconds, for how long number of flows shouldn't change to consider it stable
+# convergence_timeout in seconds, for how long number to wait for stabilisation before timing out
 # timout in seconds
-def wait_for_flows_to_stabilize(poll_interval, convergence_period, timeout, node_name):
+def wait_for_flows_to_stabilize(
+    poll_interval, convergence_period, convergence_timeout, node_name
+):
+    timeout = convergence_timeout + convergence_period
     start = time.time()
     last_changed = time.time()
     ovs_flows_num = get_number_of_ovs_flows()
