@@ -25,8 +25,8 @@ PLATFORM=kind-metrics
 CONVERGENCE_TRACKER=
 # CONVERGENCE_PERIOD and CONVERGENCE_TIMEOUT are convergence tracker parameters.
 # CONVERGENCE_PERIOD specifies for how long the system should be stable to be considered converged and
-# CONVERGENCE_TIMEOUT is a timer specifying the hard deadline for policy convergence. An expired timer
-# indicates a test failure. CONVERGENCE_TIMEOUT should be a larger than CONVERGENCE_PERIOD.
+# CONVERGENCE_TIMEOUT is a timer specifying the hard deadline for policy convergence.
+# A test failure will be reported by convergence tracker in CONVERGENCE_TIMEOUT + CONVERGENCE_PERIOD seconds.
 CONVERGENCE_PERIOD=60
 CONVERGENCE_TIMEOUT=3600
 
