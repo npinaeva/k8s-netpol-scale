@@ -18,14 +18,18 @@ def get_number_of_flows():
 
 
 # poll_interval in seconds, float
-# stable_threshold in seconds, for how long number of flows shouldn't change to consider it stable
-# timout in seconds
-def wait_for_flows_to_stabilize(poll_interval, stable_threshold, timeout, node_name):
+# convergence_period in seconds, for how long number of flows shouldn't change to consider it stable
+# convergence_timeout in seconds, for how long number to wait for stabilisation before timing out
+def wait_for_flows_to_stabilize(
+    poll_interval, convergence_period, convergence_timeout, node_name
+):
+    timeout = convergence_timeout + convergence_period
     start = time.time()
     last_changed = time.time()
     flows_num = get_number_of_flows()
     while (
-        time.time() - last_changed < stable_threshold and time.time() - start < timeout
+        time.time() - last_changed < convergence_period
+        and time.time() - start < timeout
     ):
         new_flows_num = get_number_of_flows()
         if new_flows_num != flows_num:
@@ -84,7 +88,8 @@ def check_ovn_health():
 
 def main():
     node_name = os.getenv("MY_NODE_NAME")
-    threshold = int(os.getenv("THRESHOLD"))
+    convergence_period = int(os.getenv("CONVERGENCE_PERIOD"))
+    convergence_timeout = int(os.getenv("CONVERGENCE_TIMEOUT"))
 
     logging.basicConfig(
         format="%(asctime)s %(levelname)-8s %(message)s",
@@ -92,9 +97,11 @@ def main():
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    logging.info(f"Start openflow-tracker {node_name}, threshold {threshold}")
+    logging.info(
+        f"Start openflow-tracker {node_name}, convergence_period {convergence_period}, convergence timeout {convergence_timeout}"
+    )
     stabilize_time, flow_num = wait_for_flows_to_stabilize(
-        1, threshold, 3600, node_name
+        1, convergence_period, convergence_timeout, node_name
     )
     stabilize_datetime = datetime.datetime.fromtimestamp(stabilize_time)
     nbdb_data = get_db_data()

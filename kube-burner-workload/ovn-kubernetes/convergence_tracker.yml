@@ -34,8 +34,10 @@ spec:
         - name: host-var-log-ovs
           mountPath: /var/log/openvswitch
       env:
-        - name: THRESHOLD
-          value: "{{.threshold}}"
+        - name: CONVERGENCE_PERIOD
+          value: "{{.convergence_period}}"
+        - name: CONVERGENCE_TIMEOUT
+          value: "{{.convergence_timeout}}"
         - name: ES_SERVER
           value: {{.es_server}}
         - name: ES_INDEX_NETPOL

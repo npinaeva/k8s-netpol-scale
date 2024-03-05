@@ -340,9 +340,10 @@ The right way to track convergence may differ based on network plugin or cluster
 as an example.
 For example, ovn-kubernetes network plugin uses OVS flows underneath, therefore this job spins up a pod
 on every node and tracks the number of OVS flows, when this number stops changing it considers the config to be applied.
-There is a `THRESHOLD` parameter that defines for how long it waits to consider the number of flows converged.
-`convergence_waiter.sh` is a script that waits for all convergence-tracker pod to be completed, before deleting
-the workload.
+There is a `CONVERGENCE_PERIOD` parameter that defines for how long it waits to consider the number of flows converged.
+In addition, `CONVERGENCE_TIMEOUT` sets the hard deadline for convergence tracking.
+`convergence_waiter.sh` is a script that waits `CONVERGENCE_PERIOD` for all convergence-tracker pod to be completed,
+before deleting the workload.
 
 ## Running
 
