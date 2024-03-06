@@ -144,7 +144,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 10,
+        "w": 11,
         "x": 4,
         "y": 0
       },
@@ -314,7 +314,7 @@
       "gridPos": {
         "h": 3,
         "w": 3,
-        "x": 14,
+        "x": 15,
         "y": 0
       },
       "id": 541,
@@ -369,79 +369,6 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 17,
-        "y": 0
-      },
-      "id": 548,
-      "links": [],
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^labels\\.version$/",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "10.0.1",
-      "targets": [
-        {
-          "alias": "",
-          "bucketAggs": [],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "$Datasource"
-          },
-          "hide": false,
-          "metrics": [
-            {
-              "id": "1",
-              "settings": {
-                "size": "500"
-              },
-              "type": "raw_data"
-            }
-          ],
-          "query": "uuid.keyword: $uuid AND metricName.keyword: \"clusterVersion\"",
-          "refId": "B",
-          "timeField": "timestamp"
-        }
-      ],
-      "title": "OCP version",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "$Datasource"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -458,7 +385,7 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 20,
+        "x": 18,
         "y": 0
       },
       "id": 369,
@@ -475,7 +402,7 @@
           "fields": "/^labels\\.minor$/",
           "values": false
         },
-        "textMode": "value"
+        "textMode": "value_and_name"
       },
       "pluginVersion": "10.0.1",
       "targets": [
@@ -501,7 +428,7 @@
           "timeField": "timestamp"
         }
       ],
-      "title": "k8s minor",
+      "title": "k8s version",
       "type": "stat"
     },
     {
@@ -527,10 +454,10 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 22,
+        "x": 20,
         "y": 0
       },
-      "id": 371,
+      "id": 548,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -568,6 +495,77 @@
         }
       ],
       "title": "Etcd version",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "$Datasource"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 22,
+        "y": 0
+      },
+      "id": 371,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^labels\\.version$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "10.0.1",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [],
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "C3f6SSfnk"
+          },
+          "metrics": [
+            {
+              "$$hashKey": "object:31",
+              "field": "versi",
+              "id": "1",
+              "meta": {},
+              "settings": {
+                "size": 500
+              },
+              "type": "raw_data"
+            }
+          ],
+          "query": "uuid.keyword: $uuid AND metricName: \"clusterVersion\"",
+          "refId": "A",
+          "timeField": "timestamp"
+        }
+      ],
+      "title": "OCP version",
       "type": "stat"
     },
     {
@@ -840,7 +838,10 @@
               "_index": true,
               "_type": true,
               "highlight": true,
+              "jobConfig.beforeCleanup": true,
+              "jobConfig.churnCycles": true,
               "jobConfig.churnDelay": true,
+              "jobConfig.churnDeletionStrategy": true,
               "jobConfig.churnDuration": true,
               "jobConfig.churnPercent": true,
               "jobConfig.cleanup": true,
@@ -862,7 +863,6 @@
               "jobConfig.podWait": true,
               "jobConfig.preLoadImages": true,
               "jobConfig.preLoadPeriod": true,
-              "jobConfig.shutdownCondition": true,
               "jobConfig.verifyObjects": true,
               "jobConfig.waitFor": true,
               "jobConfig.waitForDeletion": true,
@@ -4164,7 +4164,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4291,7 +4292,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -4414,7 +4416,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4541,7 +4544,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4669,7 +4673,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4796,7 +4801,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4924,7 +4930,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -5051,7 +5058,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -5179,7 +5187,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -5306,7 +5315,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -5434,7 +5444,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -5561,7 +5572,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -10503,7 +10515,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "network-policy-perf",
           "value": "network-policy-perf"
         },
@@ -10527,9 +10539,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "641ae22a-2a75-436e-bd8b-6f99451c7ee8",
-          "value": "641ae22a-2a75-436e-bd8b-6f99451c7ee8"
+          "selected": true,
+          "text": "8df1d686-01dd-4a32-bf55-10b90b76adbe",
+          "value": "8df1d686-01dd-4a32-bf55-10b90b76adbe"
         },
         "datasource": {
           "uid": "$Datasource"
@@ -10554,8 +10566,8 @@
       {
         "current": {
           "selected": false,
-          "text": "ci-ln-n6z2cik-72292-b2544-master-0",
-          "value": "ci-ln-n6z2cik-72292-b2544-master-0"
+          "text": "ci-ln-5qhjivt-72292-4z4xc-master-0",
+          "value": "ci-ln-5qhjivt-72292-4z4xc-master-0"
         },
         "datasource": {
           "uid": "$Datasource"
@@ -10580,8 +10592,8 @@
       {
         "current": {
           "selected": false,
-          "text": "ci-ln-n6z2cik-72292-b2544-worker-a-m8l9r",
-          "value": "ci-ln-n6z2cik-72292-b2544-worker-a-m8l9r"
+          "text": "ci-ln-5qhjivt-72292-4z4xc-worker-a-4r8xh",
+          "value": "ci-ln-5qhjivt-72292-4z4xc-worker-a-4r8xh"
         },
         "datasource": {
           "uid": "$Datasource"
@@ -10602,74 +10614,11 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
-      },
-      {
-        "current": {
-          "selected": true,
-          "text": [
-            "None"
-          ],
-          "value": [
-            ""
-          ]
-        },
-        "datasource": {
-          "uid": "$Datasource"
-        },
-        "definition": "{ \"find\" : \"terms\", \"field\": \"labels.node.keyword\",  \"query\": \"metricName.keyword: nodeRoles AND labels.role.keyword: infra AND uuid.keyword: $uuid\"}",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Infra nodes",
-        "multi": true,
-        "name": "infra",
-        "options": [],
-        "query": "{ \"find\" : \"terms\", \"field\": \"labels.node.keyword\",  \"query\": \"metricName.keyword: nodeRoles AND labels.role.keyword: infra AND uuid.keyword: $uuid\"}",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "P99",
-          "value": "P99"
-        },
-        "hide": 0,
-        "includeAll": false,
-        "label": "Latency percentile",
-        "multi": false,
-        "name": "latencyPercentile",
-        "options": [
-          {
-            "selected": true,
-            "text": "P99",
-            "value": "P99"
-          },
-          {
-            "selected": false,
-            "text": "P95",
-            "value": "P95"
-          },
-          {
-            "selected": false,
-            "text": "P50",
-            "value": "P50"
-          }
-        ],
-        "query": "P99, P95, P50",
-        "queryValue": "",
-        "skipUrlSync": false,
-        "type": "custom"
       }
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -10687,8 +10636,8 @@
     ]
   },
   "timezone": "utc",
-  "title": "Kube-burner Report - Raw UUID",
+  "title": "Kube-burner Report - Raw UUID NetPol",
   "uid": "d3533f3e-79d6-42aa-9816-17d140c21d81",
-  "version": 38,
+  "version": 48,
   "weekStart": ""
 }

@@ -85,7 +85,7 @@
   metricName: etcdVersion
   instant: true
 
-- query: cluster_version
+- query: cluster_version{type="completed"}
   metricName: clusterVersion
   instant: true
 

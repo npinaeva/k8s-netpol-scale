@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import ssl
+import sys
 import time
 import subprocess
 
@@ -55,6 +56,7 @@ def get_number_of_logical_flows():
 def wait_for_flows_to_stabilize(
     poll_interval, convergence_period, convergence_timeout, node_name
 ):
+    timed_out = False
     timeout = convergence_timeout + convergence_period
     start = time.time()
     last_changed = time.time()
@@ -78,8 +80,9 @@ def wait_for_flows_to_stabilize(
 
         time.sleep(poll_interval)
     if time.time() - start >= timeout:
+        timed_out = True
         logging.info(f"TIMEOUT: {node_name} {timeout} seconds passed")
-    return last_changed, ovs_flows_num
+    return last_changed, ovs_flows_num, timed_out
 
 
 def get_db_data():
@@ -107,16 +110,37 @@ def get_db_data():
     return results
 
 
+def is_ovnic():
+    output = subprocess.run(["ls", "/var/run/ovn-ic"], capture_output=True, text=True)
+    return len(output.stdout.splitlines()) != 0
+
+
+def update_rundir():
+    output = subprocess.run(
+        ["mount", "--bind", "/var/run/ovn-ic", "/var/run/ovn"],
+        capture_output=True,
+        text=True,
+    )
+    if output.stderr != "":
+        print("failed to update /var/run/ovn", output.stderr)
+        return 1
+    return 0
+
+
 def check_ovn_health():
+    ovn_ic = is_ovnic()
     concerning_logs = []
     files = {"vswitchd": "/var/log/openvswitch/ovs-vswitchd.log"}
     output = subprocess.run(["ls", "/var/log/pods"], capture_output=True, text=True)
     for output_line in output.stdout.splitlines():
+        if "ovnkube-master" in output_line:
+            files["northd"] = f"/var/log/pods/{output_line}/northd/0.log"
         if "ovnkube-node" in output_line:
             files[
                 "ovn-controller"
             ] = f"/var/log/pods/{output_line}/ovn-controller/0.log"
-            files["northd"] = f"/var/log/pods/{output_line}/northd/0.log"
+            if ovn_ic:
+                files["northd"] = f"/var/log/pods/{output_line}/northd/0.log"
     for name, file in files.items():
         output = subprocess.run(["cat", file], capture_output=True, text=True)
         if len(output.stderr) != 0:
@@ -170,7 +194,11 @@ def main():
     logging.info(
         f"Start openflow-tracker {node_name}, convergence_period {convergence_period}, convergence timeout {convergence_timeout}"
     )
-    stabilize_time, flow_num = wait_for_flows_to_stabilize(
+
+    if is_ovnic():
+        if update_rundir() != 0:
+            sys.exit(1)
+    stabilize_time, flow_num, timed_out = wait_for_flows_to_stabilize(
         1, convergence_period, convergence_timeout, node_name
     )
     stabilize_datetime = datetime.datetime.fromtimestamp(stabilize_time)
@@ -197,6 +225,7 @@ def main():
         "unhealthy_logs": ovn_health_logs,
     }
     index_result(doc)
+    sys.exit(int(timed_out))
 
 
 if __name__ == "__main__":

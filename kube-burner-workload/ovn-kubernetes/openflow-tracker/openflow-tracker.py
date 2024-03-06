@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+import sys
 import time
 import subprocess
 
@@ -23,6 +24,7 @@ def get_number_of_flows():
 def wait_for_flows_to_stabilize(
     poll_interval, convergence_period, convergence_timeout, node_name
 ):
+    timed_out = False
     timeout = convergence_timeout + convergence_period
     start = time.time()
     last_changed = time.time()
@@ -39,8 +41,9 @@ def wait_for_flows_to_stabilize(
 
         time.sleep(poll_interval)
     if time.time() - start >= timeout:
+        timed_out = True
         logging.info(f"TIMEOUT: {node_name} {timeout} seconds passed")
-    return last_changed, flows_num
+    return last_changed, flows_num, timed_out
 
 
 def get_db_data():
@@ -100,7 +103,7 @@ def main():
     logging.info(
         f"Start openflow-tracker {node_name}, convergence_period {convergence_period}, convergence timeout {convergence_timeout}"
     )
-    stabilize_time, flow_num = wait_for_flows_to_stabilize(
+    stabilize_time, flow_num, timed_out = wait_for_flows_to_stabilize(
         1, convergence_period, convergence_timeout, node_name
     )
     stabilize_datetime = datetime.datetime.fromtimestamp(stabilize_time)
@@ -114,6 +117,7 @@ def main():
         logging.info(f"HEALTHCHECK: {node_name} has no problems")
     else:
         logging.info(f"HEALTHCHECK: {node_name} has concerning logs: {ovn_health_logs}")
+    sys.exit(int(timed_out))
 
 
 if __name__ == "__main__":
