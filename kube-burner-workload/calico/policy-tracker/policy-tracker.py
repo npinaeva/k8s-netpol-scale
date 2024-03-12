@@ -130,6 +130,18 @@ def wait_for_rules_to_stabilize(
         f"finished with {filter_rules_num} rules in filter table, and {raw_rules_num} rules in raw table "
         f"and with {ipsets_len} lines in ipset list."
     )
+    doc = {
+        "metricName": "convergence_tracker",
+        "timestamp": datetime.datetime.now(datetime.UTC),
+        "workload": "network-policy-perf",
+        "uuid": uuid,
+        "source_name": node_name,
+        "convergence_timestamp": datetime.datetime.fromtimestamp(last_changed),
+        "iptables_filter_rules": filter_rules_num,
+        "iptables_raw_rules": raw_rules_num,
+        "ipsets_list_len": ipsets_len,
+    }
+    index_result(doc)
     return 0
 
 
