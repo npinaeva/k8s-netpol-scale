@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -a
+ES_SERVER=http://localhost:9200
+ES_INDEX=calico-benchmark
+set +a
