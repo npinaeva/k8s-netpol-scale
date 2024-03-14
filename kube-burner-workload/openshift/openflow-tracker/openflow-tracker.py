@@ -61,22 +61,36 @@ def wait_for_flows_to_stabilize(
     start = time.time()
     last_changed = time.time()
     ovs_flows_num = get_number_of_ovs_flows()
+    ovs_flows_converged_num = ovs_flows_num
     logical_flows_num = get_number_of_logical_flows()
+    logical_flows_converged_num = logical_flows_num
     while (
         time.time() - last_changed < convergence_period
         and time.time() - start < timeout
     ):
         new_logical_flows_num = get_number_of_logical_flows()
         if new_logical_flows_num != logical_flows_num:
+            if abs(new_logical_flows_num - logical_flows_converged_num) > 50:
+                # allow minor fluctuations within 50 logical flows range to not interrupt convergence
+                last_changed = time.time()
+                logical_flows_converged_num = new_logical_flows_num
             logical_flows_num = new_logical_flows_num
-            last_changed = time.time()
-            logging.info(f"{node_name}: logical flows={new_logical_flows_num}")
+            logging.info(
+                f"{node_name}: logical flows={new_logical_flows_num}, "
+                f"convergence flows={logical_flows_converged_num}"
+            )
         else:
             new_ovs_flows_num = get_number_of_ovs_flows()
             if new_ovs_flows_num != ovs_flows_num:
+                if abs(new_ovs_flows_num - ovs_flows_converged_num) > 100:
+                    # allow minor fluctuations within 100 OVS flows range to not interrupt convergence
+                    last_changed = time.time()
+                    ovs_flows_converged_num = new_ovs_flows_num
                 ovs_flows_num = new_ovs_flows_num
-                last_changed = time.time()
-                logging.info(f"{node_name}: OVS flows={new_ovs_flows_num}")
+                logging.info(
+                    f"{node_name}: OVS flows={new_ovs_flows_num}, "
+                    f"convergence flows={ovs_flows_converged_num}"
+                )
 
         time.sleep(poll_interval)
     if time.time() - start >= timeout:
