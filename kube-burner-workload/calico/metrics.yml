@@ -13,10 +13,10 @@
   metricName: APIRequestRate
 
 # Containers & pod metrics
-- query: (sum(irate(container_cpu_usage_seconds_total{name!="",container!="POD",namespace="kube-system"}[2m]) * 100) by (container, pod, namespace, node)) > 0
+- query: (sum(irate(container_cpu_usage_seconds_total{name!="",container!="POD",namespace=~"kube-system|calico-system"}[2m]) * 100) by (container, pod, namespace, node)) > 0
   metricName: containerCPU
 
-- query: (sum(container_memory_rss{name!="",container!="POD",namespace="kube-system"}) by (container, pod, namespace, node)) > 0
+- query: (sum(container_memory_rss{name!="",container!="POD",namespace=~"kube-system|calico-system"}) by (container, pod, namespace, node)) > 0
   metricName: containerMemory
 
 # Cluster metrics
